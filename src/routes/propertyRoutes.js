@@ -1,0 +1,11 @@
+const express = require("express");
+const router = express.Router();
+
+const propertyController = require("../controllers/propertyController");
+
+//User routes
+router.post("/add_property", propertyController.createProperty);
+router.get("/all_property", propertyController.getAllProperty);
+router.get("/:id", propertyController.getPropertyById);
+
+module.exports = router;
