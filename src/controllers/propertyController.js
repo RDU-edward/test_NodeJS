@@ -15,6 +15,12 @@ exports.createProperty = [
         bathrooms,
         description,
         availability,
+        floor_area,
+        lot_size,
+        year_built,
+        amenities,
+        address_lat,
+        address_long,
       } = req.body;
       // const filePaths = req.files ? req.files.map((photo) => photo.path) : [];
       const filePaths = req.files
@@ -34,7 +40,13 @@ exports.createProperty = [
         bathrooms,
         description,
         availability,
+        floor_area,
+        lot_size,
+        year_built,
+        amenities,
         filePaths,
+        address_lat,
+        address_long,
       );
 
       res.status(201).json(property);

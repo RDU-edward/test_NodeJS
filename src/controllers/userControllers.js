@@ -77,10 +77,10 @@ exports.getUserById = async (req, res) => {
   }
 };
 
-exports.updateUser = async (req, res) => {
+exports.updateUserStatus = async (req, res) => {
   try {
-    const { name, email } = req.body;
-    const user = await User.update(req.params.id, name, email);
+    const { status } = req.body;
+    const user = await User.update(req.params.id, status);
     res.json(user);
   } catch (err) {
     res.status(500).json({ error: err.message });

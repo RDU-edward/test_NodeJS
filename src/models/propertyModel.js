@@ -11,27 +11,42 @@ const Property = {
     bathrooms,
     description,
     availability,
+    floor_area,
+    lot_size,
+    year_built,
+    amenities,
     files,
+    address_lat,
+    address_long,
   ) => {
     const fileData = files ? JSON.stringify(files) : null;
     console.log(fileData);
-
-    const [result] = await db.execute(
-      "Call createProperty(?,?,?,?,?,?,?,?,?,?)",
-      [
-        manager_id,
-        property_title,
-        address,
-        property_type,
-        monthly_price,
-        bedrooms,
-        bathrooms,
-        description,
-        availability,
-        fileData,
-      ],
-    );
-    return { success: true, message: "Property Inserted" };
+    try {
+      const [result] = await db.execute(
+        "Call createProperty(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          manager_id,
+          property_title,
+          address,
+          property_type,
+          monthly_price,
+          bedrooms,
+          bathrooms,
+          description,
+          availability,
+          floor_area,
+          lot_size,
+          year_built,
+          amenities,
+          fileData,
+          address_lat,
+          address_long,
+        ],
+      );
+      return { success: true, message: "Property Inserted" };
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   getPropertyById: async (id) => {

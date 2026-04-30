@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const db = require("../config/db");
 const { createUser, getAllUsers } = require("../controllers/userControllers");
+const { response } = require("express");
 
 const User = {
   createUser: async (
@@ -93,18 +94,13 @@ const User = {
     }
   },
 
-  // findById: async (id) => {
-  //   const [rows] = await db.execute("CALL GetUserById(?)", [id]);
-  //   return rows[0][0]; // stored procedure returns array of arrays
-  // },
-
-  update: async (id, firstname, lastname) => {
-    const [result] = await db.execute("CALL UpdateUser(?, ?, ?)", [
-      id,
-      firstname,
-      lastname,
-    ]);
-    return { id, firstname, lastname };
+  update: async (id, status) => {
+    const [result] = await db.execute("CALL UpdateUser(?, ?)", [id, status]);
+    if (result.affectedRows == 1) {
+      return { success: true, message: "User Updated Successfully" };
+    } else {
+      return { success: false, message: "Error in updating user" };
+    }
   },
 
   delete: async (id) => {

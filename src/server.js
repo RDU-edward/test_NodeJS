@@ -26,7 +26,7 @@ app.use("/api/reservation", reservationRoutes);
 // Serve files from the "uploads" folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+// const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Serve files from the "uploads" folder
 
