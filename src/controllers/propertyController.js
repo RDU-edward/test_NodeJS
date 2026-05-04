@@ -58,6 +58,78 @@ exports.createProperty = [
   },
 ];
 
+exports.updateProperty = [
+  upload.array("files"),
+  async (req, res) => {
+    try {
+      const propertyId = req.params.id;
+      const {
+        manager_id,
+        property_title,
+        address,
+        property_type,
+        monthly_price,
+        bedrooms,
+        bathrooms,
+        description,
+        availability,
+        floor_area,
+        lot_size,
+        year_built,
+        amenities,
+        existingFiles,
+        address_lat,
+        address_long,
+      } = req.body;
+
+      // Parse existing files safely
+      let oldFiles = [];
+      if (existingFiles) {
+        try {
+          oldFiles =
+            typeof existingFiles === "string"
+              ? JSON.parse(existingFiles)
+              : existingFiles;
+        } catch {
+          oldFiles = [];
+        }
+      }
+
+      // Map newly uploaded files
+      const newFiles =
+        req.files?.map((file) => "uploads/" + file.filename) || [];
+
+      // Merge files
+      const allFiles = [...oldFiles, ...newFiles];
+
+      // Update property
+      const updatedProperty = await Property.updateProperty(propertyId, {
+        manager_id,
+        property_title,
+        address,
+        property_type,
+        monthly_price,
+        bedrooms,
+        bathrooms,
+        description,
+        availability,
+        floor_area,
+        lot_size,
+        year_built,
+        amenities,
+        files: allFiles, // use 'files' if your model expects an array
+        address_lat,
+        address_long,
+      });
+
+      res.status(200).json(updatedProperty);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Failed to update property" });
+    }
+  },
+];
+
 exports.getAllAvailableProperties = async (req, res) => {
   try {
     const properties = await Property.getAllAvailableProperties();

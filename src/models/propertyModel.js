@@ -49,6 +49,67 @@ const Property = {
     }
   },
 
+  updateProperty: async (
+    property_id,
+    {
+      manager_id,
+      property_title,
+      address,
+      property_type,
+      monthly_price,
+      bedrooms,
+      bathrooms,
+      description,
+      availability,
+      floor_area,
+      lot_size,
+      year_built,
+      amenities,
+      files,
+      address_lat,
+      address_long,
+    },
+  ) => {
+    try {
+      // Ensure photos is an array
+      // const fileData =
+      //   files && Array.isArray(files) ? JSON.stringify(files) : null;
+      console.log(files);
+
+      const fileData = files ? JSON.stringify(files) : null;
+      console.log(fileData, "asdfs");
+
+      const [result] = await db.execute(
+        "CALL updateProperty(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          property_id,
+          manager_id,
+          property_title,
+          address,
+          property_type,
+          monthly_price,
+          bedrooms,
+          bathrooms,
+          description,
+          availability,
+          floor_area,
+          lot_size,
+          year_built,
+          amenities,
+          fileData,
+          address_lat,
+          address_long,
+        ],
+      );
+
+      // Optionally return the updated property object
+      return { success: true, message: "Property Updated", property_id };
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  },
+
   getPropertyById: async (id) => {
     const [rows] = await db.execute("Call getPropertyById(?)", [id]);
     return rows;
