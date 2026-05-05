@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const db = require("../config/db");
 const { createUser, getAllUsers } = require("../controllers/userControllers");
 const { response } = require("express");
+const sendEmail = require("../utils/mailer");
 
 const User = {
   createUser: async (
@@ -12,28 +13,74 @@ const User = {
     contact_number,
     address,
     role,
-    files, // Expect an array of file path
+    files, // Expect an array of file paths
   ) => {
-    // You can store the file paths as a JSON array or as a comma-separated string
-    const filesData = files ? JSON.stringify(files) : null;
+    try {
+      // Convert files array to JSON string
+      const filesData = files ? JSON.stringify(files) : null;
 
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    const [result] = await db.execute(
-      "CALL createUser(?, ?, ?, ?, ?, ?, ?, ?)",
-      [
-        firstname,
-        lastname,
-        email,
-        hashedPassword,
-        contact_number,
-        address,
-        role,
-        filesData, // Store files as a JSON string (or adjust based on your database schema)
-      ],
-    );
-    return { success: true, message: "Successfully inserted" };
+      // Hash the password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      // Insert the new user
+      const [result] = await db.execute(
+        "CALL createUser(?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+          firstname,
+          lastname,
+          email,
+          hashedPassword,
+          contact_number,
+          address,
+          role,
+          filesData,
+        ],
+      );
+
+      // If insertion is successful
+      if (result.affectedRows > 0 || result.insertId) {
+        // Query all admin users
+        const [admins] = await db.execute(
+          "SELECT email, firstname FROM node_user WHERE role = 'admin'",
+        );
+
+        // Send notification email to each admin
+        for (const admin of admins) {
+          await sendEmail({
+            to: admin.email,
+            subject: "New Manager Account Pending Approval",
+            text: `Hello ${admin.firstname},
+                    A new Manager account (${firstname} ${lastname}) has been registered and is pending your approval.
+
+                    Please review and approve the account at: https://www.ihomes.com/admin
+
+                    Thank you,
+                    iHomes Team`,
+            html: `<h2>New Manager Account Pending Approval</h2>
+                    <p>Hello ${admin.firstname},</p>
+
+                    <p>A new Manager account (<strong>${firstname} ${lastname}</strong>) has been registered and is <strong>pending your approval</strong>.</p>
+
+                    <p>Please review and approve the account by clicking the link below:</p>
+
+                    <p><a href="https://www.ihomes.com/admin">Approve Account</a></p>
+
+                    <p>Thank you for your attention.</p>
+
+                    <p>Best regards,<br>
+                    <i>iHomes Team</i></p>`,
+          });
+        }
+
+        return { success: true, message: "User created and admins notified" };
+      } else {
+        return { success: false, message: "Failed to create user" };
+      }
+    } catch (error) {
+      console.error("Error creating user:", error);
+      return { success: false, message: "Error creating user" };
+    }
   },
 
   loginUser: async (email, password) => {

@@ -16,6 +16,7 @@ const reservationRoutes = require("./routes/reservationRoutes");
 // const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 const cors = require("cors");
+const sendEmail = require("./utils/mailer");
 const app = express();
 
 app.use(cors()); // Enable CORS for all routes and origins
@@ -78,7 +79,52 @@ app.post("/create-payment-intent", async (req, res) => {
     res.status(500).send({ error: err.message });
   }
 });
+
+// Test function only runs if this file is executed directly
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// async function test() {
+//   await sendEmail({
+//     to: "jezmacoy1998@gmail.com",
+//     subject: "New Manager Account Pending Approval",
+//     text: `Hello Admin,
+
+// A new Manager account has been registered and is pending your approval.
+
+// Please review and approve the account at: https://www.ihomes.com/admin
+
+// Thank you for your attention.
+
+// Best regards,
+// iHomes Team`,
+//     html: `<h2>New Manager Account Pending For Approval</h2>
+// <p>Hello Admin,</p>
+
+// <p>A new Manager account has been registered and is <strong>pending for your approval</strong>.</p>
+
+// <p>Please review and approve the account by clicking the link below:</p>
+
+// <p><a href="https://www.ihomes.com/admin">Approve Account</a></p>
+
+// <p>Thank you for your attention.</p>
+
+// <p>Best regards,<br>
+// <i>iHomes Team</i></p>`,
+//   });
+// }
+
+// test();
+
+// # DB_HOST=loacalhost
+// # DB_USER=root
+// # DB_PASS=root
+// # DB_NAME=test
+
+// # Node Mailer Credentials
+// # EMAIL_USER = "edwardcatapan@gmail.com"
+// # EMAIL_PASS = "scah xnqy fhcc retl",
+// STRIPE_SECRET_KEY = sk_test_eqXnJVeXFUmkfE7b3FZkogGo00bG3wOC02;
