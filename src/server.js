@@ -118,13 +118,3 @@ app.listen(PORT, () => {
 // }
 
 // test();
-
-// # DB_HOST=loacalhost
-// # DB_USER=root
-// # DB_PASS=root
-// # DB_NAME=test
-
-// # Node Mailer Credentials
-// # EMAIL_USER = "edwardcatapan@gmail.com"
-// # EMAIL_PASS = "scah xnqy fhcc retl",
-// STRIPE_SECRET_KEY = sk_test_eqXnJVeXFUmkfE7b3FZkogGo00bG3wOC02;
