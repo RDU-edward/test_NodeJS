@@ -13,7 +13,7 @@ const reservationRoutes = require("./routes/reservationRoutes");
 // const adminRoutes = require("./routes/adminRoutes");
 // const candidateRoutes = require("./routes/candidateRoutes");
 // const votersRoutes = require("./routes/votersRoutes");
-// const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 const cors = require("cors");
 const sendEmail = require("./utils/mailer");
