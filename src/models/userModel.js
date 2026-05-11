@@ -141,9 +141,52 @@ const User = {
     }
   },
 
-  update: async (id, status) => {
-    const [result] = await db.execute("CALL UpdateUser(?, ?)", [id, status]);
+  update: async (id, firstname, email, status) => {
+    const [result] = await db.execute("CALL updateUser(?, ?, ?, ?)", [
+      id,
+      firstname,
+      email,
+      status,
+    ]);
+    console.log(result);
+
     if (result.affectedRows == 1) {
+      await sendEmail({
+        to: `${email}`,
+        subject: "Account Status Updated",
+        text: `Hello ${firstname},
+
+        Your account has been ${status === "active" ? "approved" : "rejected"}.
+
+        If you have any questions or inquiries, feel free to contact us at ihomes@gmail.com.
+
+        Thank you,
+        iHomes Team`,
+
+        html: `
+        Account Status Updated
+
+        <p>Hello ${firstname},</p>
+
+        <p>
+          Your account has been
+          <strong>${status === "active" ? "approved" : "rejected"}</strong>.
+        </p>
+
+        <p>
+          If you have any questions or inquiries, feel free to contact us at
+          <a href="mailto:ihomes@gmail.com">ihomes@gmail.com</a>.
+        </p>
+
+        <p>Thank you for your attention.</p>
+
+        <p>
+          Best regards,<br />
+          <i>iHomes Team</i>
+        </p>
+
+        `,
+      });
       return { success: true, message: "User Updated Successfully" };
     } else {
       return { success: false, message: "Error in updating user" };

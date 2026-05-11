@@ -5,6 +5,7 @@ exports.createReservation = async (req, res) => {
     const {
       property_id,
       manager_id,
+      manager_email,
       tenant_id,
       fullname,
       contact_number,
@@ -16,6 +17,7 @@ exports.createReservation = async (req, res) => {
     const reservation = await Reservation.createReservation(
       property_id,
       manager_id,
+      manager_email,
       tenant_id,
       fullname,
       contact_number,
